@@ -1,0 +1,106 @@
+name: Accept tasks closed as completed
+
+# Merging a PR accepts the tasks it closes (Kamal, 2026-10-14). A task issue closed
+# as "completed" by the repo owner or an admin (e.g. an org owner), by a merged PR's closing keyword or by hand,
+# gets the `accepted` label and its two ledger rows in LEDGER.md (Kamal, 2026-10-16: hand-written rows got missed).
+# Closed as "not planned" means rejected: no label, no rows.
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  issues: write
+  contents: write
+  pull-requests: read
+
+jobs:
+  accept:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const names = issue.labels.map((l) => l.name);
+            // An `accepted` label put on by hand doesn't stop the rows; the ledger check below stops duplicates.
+            if (!names.includes('task')) return;
+            if (issue.state_reason !== 'completed') return;
+            const sender = context.payload.sender.login;
+            if (sender !== context.repo.owner) {
+              const { data } = await github.rest.repos.getCollaboratorPermissionLevel({ ...context.repo, username: sender });
+              if (data.permission !== 'admin') return;
+            }
+            if (!names.includes('accepted')) {
+              await github.rest.issues.addLabels({ ...context.repo, issue_number: issue.number, labels: ['accepted'] });
+            }
+
+            const KAMAL = 'kamal0808';
+            const nameOf = async (login, work) => {
+              if (login.toLowerCase() === KAMAL) return work ? 'Kamal Khatwani (via Claude)' : 'Kamal Khatwani';
+              const { data } = await github.rest.users.getByUsername({ username: login }).catch(() => ({ data: {} }));
+              return data.name || `@${login}`;
+            };
+
+            // Who did the work: the merged PR that closed the issue, else the last hand-in comment
+            // linking a PR, else Kamal (closed by hand). A PR in a private repo the token can't read
+            // comes back as no closer, so the hand-in comment covers it.
+            let worker = KAMAL, link = issue.html_url;
+            const q = await github.graphql(`query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){issue(number:$n){
+              timelineItems(last:5,itemTypes:CLOSED_EVENT){nodes{... on ClosedEvent{closer{... on PullRequest{url merged author{login}}}}}}}}}`,
+              { o: context.repo.owner, r: context.repo.repo, n: issue.number }).catch(() => null);
+            const closer = (q ? q.repository.issue.timelineItems.nodes : []).map((e) => e.closer).filter((c) => c && c.merged).pop();
+            if (closer) {
+              link = closer.url;
+              worker = closer.author ? closer.author.login : KAMAL;
+            } else {
+              const comments = await github.paginate(github.rest.issues.listComments, { ...context.repo, issue_number: issue.number });
+              const handIn = comments.filter((c) => c.user.type !== 'Bot' && /https:\/\/github\.com\/[^\s)]+\/pull\/\d+/.test(c.body)).pop();
+              if (handIn) {
+                link = handIn.body.match(/https:\/\/github\.com\/[^\s)]+\/pull\/\d+/)[0];
+                worker = handIn.user.login;
+              }
+            }
+            const ideaBy = ((issue.body || '').match(/^Idea:\s*@([\w-]+)/m) || [, KAMAL])[1];
+
+            const say = (body) => github.rest.issues.createComment({ ...context.repo, issue_number: issue.number, body });
+            const neki = Number((names.find((n) => /^neki:\d+$/.test(n)) || 'neki:0').slice(5));
+            if (!neki) return say('Accepted: closed as completed by the owner. No `neki:N` label, so no ledger rows were added.');
+
+            const ideaName = await nameOf(ideaBy, false), workName = await nameOf(worker, true);
+            const date = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            const fmt = (n) => n.toLocaleString('en-IN');
+            const title = issue.title.replace(/\|/g, '/');
+            const idea = Math.round(neki / 100);
+            // Tasks closed together race on LEDGER.md: a stale sha is refused, so re-read and retry.
+            for (let attempt = 1; ; attempt++) {
+              const { data: file } = await github.rest.repos.getContent({ ...context.repo, path: 'LEDGER.md' });
+              const text = Buffer.from(file.content, 'base64').toString('utf8');
+              // topc-tasks names its tasks topc-tasks#N; the other ledgers use #N.
+              const ref = (text.includes(`on ${context.repo.repo}#`) ? context.repo.repo : '') + `#${issue.number}`;
+              // Older rows may use either form, so match both.
+              if (new RegExp(`(for|on) (${context.repo.repo})?#${issue.number}[:\\s]|${context.repo.repo}/issues/${issue.number} `).test(text)) {
+                return say(`Accepted: closed as completed by the owner. Ledger rows for ${ref} already exist.`);
+              }
+
+              const lines = text.split('\n');
+              const head = lines.findIndex((l) => l.startsWith('| # | Date |'));
+              if (head < 0) return say('Accepted, but LEDGER.md has no `| # | Date |` table, so no rows were added. Add them by hand.');
+              let end = head + 1;
+              while (end + 1 < lines.length && lines[end + 1].startsWith('|')) end++;
+              const nums = lines.slice(head + 2, end + 1).map((l) => parseInt(l.split('|')[1], 10)).filter((n) => n > 0);
+              const next = nums.length ? Math.max(...nums) + 1 : 1;
+              const rows = [
+                `| ${next} | ${date} | ${ideaName} | Idea (1%) for ${ref}: ${title} | ${fmt(idea)} | provisional | ${issue.html_url} |`,
+                `| ${next + 1} | ${date} | ${workName} | Work (99%) on ${ref}: ${title} | ${fmt(neki - idea)} | provisional | ${link} |`,
+              ];
+              lines.splice(end + 1, 0, ...rows);
+              const saved = await github.rest.repos.createOrUpdateFileContents({
+                ...context.repo,
+                path: 'LEDGER.md',
+                sha: file.sha,
+                message: `Ledger rows ${next}–${next + 1}: ${ref} accepted`,
+                content: Buffer.from(lines.join('\n')).toString('base64'),
+              }).catch((e) => { if (attempt < 8 && [409, 422].includes(e.status)) return null; throw e; });
+              if (!saved) { await new Promise((r) => setTimeout(r, 1000 + Math.random() * 3000)); continue; }
+              return say(`Accepted: closed as completed by the owner. Ledger rows ${next}–${next + 1} added: idea ${fmt(idea)} to ${ideaName}, work ${fmt(neki - idea)} to ${workName}.`);
+            }
