@@ -10,3 +10,5 @@ Units: 1 Neki = 1 rupee of work at today's market price, priced from TOPC's rate
 | 2 | 2026-10-25 | Kamal Khatwani | Work (99%) on #2: A clickable Chess Coach mock, built on a real player's last 3 months | 8,910 | provisional | https://github.com/topc-social/chess-coach-tasks/pull/3 |
 | 3 | 2026-10-25 | Kamal Khatwani | Idea (1%) for #7: Find how Chess Coach visitors can ask the coach on their own Claude account | 30 | provisional | https://github.com/topc-social/chess-coach-tasks/pull/8 |
 | 4 | 2026-10-25 | Kamal Khatwani | Work (99%) on #7: Find how Chess Coach visitors can ask the coach on their own Claude account | 2,970 | provisional | https://github.com/topc-social/chess-coach-tasks/pull/8 |
+| 5 | 2026-10-26 | Kamal Khatwani | Idea (1%) for #6: Turn a player's worst moments into move-by-move lessons automatically | 65 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/6 |
+| 6 | 2026-10-26 | Kamal Khatwani (via Claude) | Work (99%) on #6: Turn a player's worst moments into move-by-move lessons automatically | 6,435 | provisional | https://github.com/kamal0808/chess-coach/pull/1 |
