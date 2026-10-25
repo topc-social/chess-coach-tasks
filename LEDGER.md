@@ -6,3 +6,5 @@ Units: 1 Neki = 1 rupee of work at today's market price, priced from TOPC's rate
 
 | # | Date | Who | What | Neki | Status | Link |
 |---|---|---|---|---|---|---|
+| 1 | 2026-10-25 | Kamal Khatwani | Idea (1%) for #2: A clickable Chess Coach mock, built on a real player's last 3 months | 90 | provisional | https://github.com/topc-social/chess-coach-tasks/pull/3 |
+| 2 | 2026-10-25 | Kamal Khatwani | Work (99%) on #2: A clickable Chess Coach mock, built on a real player's last 3 months | 8,910 | provisional | https://github.com/topc-social/chess-coach-tasks/pull/3 |
