@@ -26,3 +26,5 @@ Units: 1 Neki = 1 rupee of work at today's market price, priced from TOPC's rate
 | 18 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #15: How chess.com Game Review works, and what players hate about it | 2,673 | provisional | https://github.com/kamal0808/chess-coach/pull/6 |
 | 19 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #14: Game review ends with an honest verdict: where you lost it and what to fix | 12 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/14 |
 | 20 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #14: Game review ends with an honest verdict: where you lost it and what to fix | 1,188 | provisional | https://github.com/kamal0808/chess-coach/pull/7 |
+| 21 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #16: Game review goes move by move, with a label and the reason on every move | 12 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/16 |
+| 22 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #16: Game review goes move by move, with a label and the reason on every move | 1,188 | provisional | https://github.com/kamal0808/chess-coach/pull/7 |
