@@ -40,3 +40,5 @@ Units: 1 Neki = 1 rupee of work at today's market price, priced from TOPC's rate
 | 32 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #23: Review board shows what the coach means: moves, batteries, material | 1,188 | provisional | https://github.com/kamal0808/chess-coach/pull/7 |
 | 33 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #21: Our review's coach explains every move with Claude | 12 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/21 |
 | 34 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #21: Our review's coach explains every move with Claude | 1,188 | provisional | https://github.com/kamal0808/chess-coach/pull/8 |
+| 35 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #24: Review button opens the live site, not localhost | 4 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/24 |
+| 36 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #24: Review button opens the live site, not localhost | 346 | provisional | https://github.com/kamal0808/chess-coach/pull/9 |
