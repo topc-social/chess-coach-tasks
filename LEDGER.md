@@ -50,3 +50,5 @@ Units: 1 Neki = 1 rupee of work at today's market price, priced from TOPC's rate
 | 42 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #27: Chess Coach remembers you: opens straight to your report | 792 | provisional | https://github.com/kamal0808/chess-coach/pull/11 |
 | 43 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #29: Chess Coach becomes an app: sidebar with Profile, Games, Practice, Lessons, Settings | 40 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/29 |
 | 44 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #29: Chess Coach becomes an app: sidebar with Profile, Games, Practice, Lessons, Settings | 3,960 | provisional | https://github.com/kamal0808/chess-coach/pull/12 |
+| 45 | 2026-11-21 | Kamal Khatwani | Idea (1%) for #30: Same UX as chess.com: review summary, board colours, no learning curve | 12 | provisional | https://github.com/topc-social/chess-coach-tasks/issues/30 |
+| 46 | 2026-11-21 | Kamal Khatwani (via Claude) | Work (99%) on #30: Same UX as chess.com: review summary, board colours, no learning curve | 1,188 | provisional | https://github.com/kamal0808/chess-coach/pull/12 |
